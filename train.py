@@ -6,40 +6,14 @@ import argparse
 import json
 import os, sys
 import numpy as np
-#import tensorflow.compat.v1 as tf
+import tensorflow.compat.v1 as tf
 import tensorflow as tf2
 import time
 import tqdm
 
-import tensorflow as tf
-print("Tensorflow version " + tf.__version__)
 
-try:
-  tpu = tf.distribute.cluster_resolver.TPUClusterResolver()  # TPU detection
-  print('Running on TPU ', tpu.cluster_spec().as_dict()['worker'])
-except ValueError:
-  raise BaseException('ERROR: Not connected to a TPU runtime; please see the previous cell in this notebook for instructions!')
-
-tf.config.experimental_connect_to_cluster(tpu)
-tf.tpu.experimental.initialize_tpu_system(tpu)
-tpu_strategy = tf.distribute.experimental.TPUStrategy(tpu)
-
-if tf.VERSION >= '2':
-    tf.disable_eager_execution()
-    tf.config.experimental.enable_tensor_float_32_execution(False)
-    tf.config.optimizer.set_experimental_options({'layout_optimizer': False,
-                                                  'constant_folding': False,
-                                                  'shape_optimization': False,
-                                                  'remapping': False,
-                                                  'arithmetic_optimization': False,
-                                                  'dependency_optimization': False,
-                                                  'loop_optimization': False,
-                                                  'disable_meta_optimizer': True
-                                                  })
-
-
-import model, sample, encoder
-from load_dataset import load_dataset, Sampler
+from src import model, sample, encoder
+from src.load_dataset import load_dataset, Sampler
 
 CHECKPOINT_DIR = 'checkpoint'
 SAMPLE_DIR = 'samples'
